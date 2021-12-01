@@ -91,34 +91,33 @@ class _MyHomePageState extends State<MyHomePage> {
                   pag.requestPermissions();
                 },
               ),
+              // FlatButton(
+              //   child: Text("Autenticar no PagSeguro"),
+              //   onPressed: () {
+              //     pag.requestAuthentication();
+              //   },
+              // ),
+              // FlatButton(
+              //   child: Text("Verificar o status da autenticacao"),
+              //   onPressed: () {
+              //     pag.checkAuthentication();
+              //   },
+              // ),
+              // Text("Se for uma minizinha ou similares"),
               FlatButton(
-                child: Text("Autenticar no PagSeguro"),
-                onPressed: () {
-                  pag.requestAuthentication();
-                },
-              ),
-              FlatButton(
-                child: Text("Verificar o status da autenticacao"),
-                onPressed: () {
-                  pag.checkAuthentication();
-                },
-              ),
-              Text("Se for uma minizinha ou similares"),
-              FlatButton(
-                child: Text(
-                    "Realizar uma trasacao de debito no valor de R\$: 2,00"),
+                child: Text("Testar Atenticação"),
                 onPressed: () {
                   pag.startPinpadDebitPayment(2.00);
                 },
               ),
-              Text("Se for uma a pro use esse"),
-              FlatButton(
-                child: Text(
-                    "Realizar uma trasacao de debito no valor de R\$: 2,00"),
-                onPressed: () {
-                  pag.startTerminalDebitPayment(2.00);
-                },
-              )
+              // Text("Se for uma a pro use esse"),
+              // FlatButton(
+              //   child: Text(
+              //       "Realizar uma trasacao de debito no valor de R\$: 2,00"),
+              //   onPressed: () {
+              //     pag.startTerminalDebitPayment(2.00);
+              //   },
+              // )
             ],
           ),
         ),
