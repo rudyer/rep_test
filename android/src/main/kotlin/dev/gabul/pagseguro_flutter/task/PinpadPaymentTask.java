@@ -6,8 +6,10 @@ import android.text.TextUtils;
 
 
 import br.com.uol.pagseguro.plugpagservice.wrapper.PlugPag;
+import br.com.uol.pagseguro.plugpagservice.wrapper.PlugPagActivationData;
 import br.com.uol.pagseguro.plugpagservice.wrapper.PlugPagEventData;
 import br.com.uol.pagseguro.plugpagservice.wrapper.PlugPagEventListener;
+import br.com.uol.pagseguro.plugpagservice.wrapper.PlugPagInitializationResult;
 import br.com.uol.pagseguro.plugpagservice.wrapper.PlugPagPaymentData;
 import br.com.uol.pagseguro.plugpagservice.wrapper.PlugPagTransactionResult;
 import dev.gabul.pagseguro_flutter.PlugPagManager;
@@ -16,7 +18,7 @@ import dev.gabul.pagseguro_flutter.TaskHandler;
 import dev.gabul.pagseguro_flutter.helper.Bluetooth;
 
 public class PinpadPaymentTask
-        extends AsyncTask<PlugPagPaymentData, String, PlugPagTransactionResult>
+        extends AsyncTask<PlugPagPaymentData, String, PlugPagInitializationResult>
         implements PlugPagEventListener {
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -54,8 +56,8 @@ public class PinpadPaymentTask
     }
 
     @Override
-    protected PlugPagTransactionResult doInBackground(PlugPagPaymentData... plugPagPaymentData) {
-        PlugPagTransactionResult result = null;
+    protected PlugPagInitializationResult doInBackground(PlugPagPaymentData... plugPagPaymentData) {
+        PlugPagInitializationResult result = null;
         PlugPag plugpag = null;
 
         if (plugPagPaymentData != null && plugPagPaymentData.length > 0 && plugPagPaymentData[0] != null) {
@@ -65,11 +67,11 @@ public class PinpadPaymentTask
 
             try {
                 // Update the throbber
-                this.publishProgress("");
+                this.publishProgress("Entrei na certa");
 
                 // Perform payment
                // plugpag.initBTConnection(new PlugPagDevice(Bluetooth.getPinpad()));
-                result = plugpag.doPayment(plugPagPaymentData[0]);
+                result = plugpag.initializeAndActivatePinpad(new PlugPagActivationData("403938"));
             } catch (Exception e) {
                 this.publishProgress(e.getMessage());
             } finally {
@@ -92,16 +94,15 @@ public class PinpadPaymentTask
     }
 
     @Override
-    protected void onPostExecute(PlugPagTransactionResult plugPagTransactionResult) {
+    protected void onPostExecute(PlugPagInitializationResult plugPagTransactionResult) {
         super.onPostExecute(plugPagTransactionResult);
 
-        if (plugPagTransactionResult != null &&
-                !TextUtils.isEmpty(plugPagTransactionResult.getTransactionCode()) &&
-                !TextUtils.isEmpty(plugPagTransactionResult.getTransactionId())) {
+        if ((plugPagTransactionResult != null))
+                {
             PreviousTransactions.push(
                     new String[]{
-                            plugPagTransactionResult.getTransactionCode(),
-                            plugPagTransactionResult.getTransactionId()
+                            String.valueOf(plugPagTransactionResult.getResult())
+
                     });
         }
 
