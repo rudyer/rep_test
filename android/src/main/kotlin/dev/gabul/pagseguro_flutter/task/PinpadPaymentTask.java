@@ -77,7 +77,7 @@ public class PinpadPaymentTask
                 this.publishProgress(e.getMessage());
             } finally {
                 //plugpag.setEventListener(null);
-                this.publishProgress("finalizou");
+                this.publishProgress(String.valueOf(res));
             }
 
             this.mPaymentData = null;
