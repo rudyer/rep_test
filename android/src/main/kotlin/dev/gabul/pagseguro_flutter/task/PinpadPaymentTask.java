@@ -18,7 +18,7 @@ import dev.gabul.pagseguro_flutter.TaskHandler;
 import dev.gabul.pagseguro_flutter.helper.Bluetooth;
 
 public class PinpadPaymentTask
-        extends AsyncTask<PlugPagPaymentData, String, PlugPagInitializationResult>
+        extends AsyncTask<PlugPagPaymentData, String, Boolean>
         implements PlugPagEventListener {
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -56,13 +56,13 @@ public class PinpadPaymentTask
     }
 
     @Override
-    protected PlugPagInitializationResult doInBackground(PlugPagPaymentData... plugPagPaymentData) {
+    protected Boolean doInBackground(PlugPagPaymentData... plugPagPaymentData) {
         PlugPagInitializationResult result = null;
         PlugPag plugpag = null;
-
+        boolean res = false;
         if (plugPagPaymentData != null && plugPagPaymentData.length > 0 && plugPagPaymentData[0] != null) {
             plugpag = PlugPagManager.getInstance().getPlugPag();
-            plugpag.setEventListener(this);
+          //  plugpag.setEventListener(this);
             this.mPaymentData = plugPagPaymentData[0];
 
             try {
@@ -72,16 +72,18 @@ public class PinpadPaymentTask
                 // Perform payment
                // plugpag.initBTConnection(new PlugPagDevice(Bluetooth.getPinpad()));
                 result = plugpag.initializeAndActivatePinpad(new PlugPagActivationData("403938"));
+                res = plugpag.isAuthenticated();
             } catch (Exception e) {
                 this.publishProgress(e.getMessage());
             } finally {
-                plugpag.setEventListener(null);
+                //plugpag.setEventListener(null);
+                this.publishProgress("finalizou");
             }
 
             this.mPaymentData = null;
         }
 
-        return result;
+        return res;
     }
 
     @Override
@@ -93,22 +95,22 @@ public class PinpadPaymentTask
         }
     }
 
-    @Override
-    protected void onPostExecute(PlugPagInitializationResult plugPagTransactionResult) {
-        super.onPostExecute(plugPagTransactionResult);
 
-        if ((plugPagTransactionResult != null))
-                {
-            PreviousTransactions.push(
-                    new String[]{
-                            String.valueOf(plugPagTransactionResult.getResult())
-
-                    });
-        }
-
-        this.mHandler.onTaskFinished(plugPagTransactionResult);
-        this.mHandler = null;
-    }
+//    protected void onPostExecute(boolean plugPagTransactionResult) {
+//        super.onPostExecute(plugPagTransactionResult);
+//
+//        if ((plugPagTransactionResult != false))
+//                {
+//            PreviousTransactions.push(
+//                    new String[]{
+//                            String.valueOf(true)
+//
+//                    });
+//        }
+//
+//        this.mHandler.onTaskFinished(plugPagTransactionResult);
+//        this.mHandler = null;
+//    }
 
     // -----------------------------------------------------------------------------------------------------------------
     // PlugPag event handling
